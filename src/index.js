@@ -6,6 +6,11 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import logger from 'redux-logger';
+//* 1. import takeEvery => listen for specific events
+//* 4. import put => behaves like dispatch();
+import { takeEvery, put } from 'redux-saga/effects';
+//* 10. import axios
+import axios from 'axios';
 
 //! 1. myGenerator generator
 function* myGenerator() {
@@ -53,6 +58,7 @@ console.log(toggle.next().value);
 console.log(toggle.next().value);
 console.log(toggle.next().value);
 
+//! elementList Reducer
 const elementList = (state = [], action) => {
     switch (action.type) {
         case 'SET_ELEMENTS':
@@ -62,7 +68,7 @@ const elementList = (state = [], action) => {
     }
 };
 
-//! 6. countDown generator
+//! 6. countDown generator (PRACTICE SKILL)
 // Generators can have loops, conditional statements, variables and even return (just be careful about return! That still will stop!).
 function* countDownGenerator() {
     let a = 10;
@@ -73,21 +79,48 @@ function* countDownGenerator() {
     yield `Take off!`;
 }
 
-const countDown = countDownGenerator();
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-console.log(countDown.next().value);
-
 // this is the saga that will watch for actions
-function* watcherSaga() {}
+//* 2. generator function => TRAFFIC COP
+//* takeEvery(TYPE, function);
+function* watcherSaga() {
+    console.log(`Inside the watcherSaga`);
+    // yield takeEvery('SET_ELEMENTS', firstSaga);
+    //* 6. listen for GET generator
+    yield takeEvery('FETCH_ELEMENTS', fetchElements);
+    //* 12. listen for POST generator
+    yield takeEvery('ADD_ELEMENT', postElement);
+}
+
+//* 3. firstSaga
+// function* firstSaga(action) {
+//     console.log(`Inside the firstSaga!`);
+//     yield (`firstSaga was intercepted`, action);
+// }
+
+//* 5 fetchElements => GET req
+function* fetchElements() {
+    try {
+        const elementResponse = yield axios.get('/api/element');
+        yield put({
+            type: 'SET_ELEMENTS',
+            payload: elementResponse.data,
+        });
+    } catch (err) {
+        console.log(`ERR in fetchElements:`, err);
+    }
+}
+
+//* 11. POST generator
+function* postElement(action) {
+    try {
+        //POST
+        yield axios.post('/api/element', action.payload);
+        //GET
+        yield put({ type: 'FETCH_ELEMENTS' });
+    } catch (err) {
+        console.log(`ERR in postElement:`, err);
+    }
+}
 
 const sagaMiddleware = createSagaMiddleware();
 

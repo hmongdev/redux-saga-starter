@@ -6,7 +6,7 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import createSagaMiddleware from 'redux-saga';
 import logger from 'redux-logger';
-//* 1. import takeEvery => listen for specific events
+//* 0. import takeEvery => listen for specific events
 //* 4. import put => behaves like dispatch();
 import { takeEvery, put } from 'redux-saga/effects';
 //* 10. import axios
@@ -58,17 +58,7 @@ console.log(toggle.next().value);
 console.log(toggle.next().value);
 console.log(toggle.next().value);
 
-//! elementList Reducer
-const elementList = (state = [], action) => {
-    switch (action.type) {
-        case 'SET_ELEMENTS':
-            return action.payload;
-        default:
-            return state;
-    }
-};
-
-//! 6. countDown generator (PRACTICE SKILL)
+//! 7. countDown generator (PRACTICE SKILL)
 // Generators can have loops, conditional statements, variables and even return (just be careful about return! That still will stop!).
 function* countDownGenerator() {
     let a = 10;
@@ -78,6 +68,16 @@ function* countDownGenerator() {
     }
     yield `Take off!`;
 }
+
+//* 1. elementList Reducer
+const elementList = (state = [], action) => {
+    switch (action.type) {
+        case 'SET_ELEMENTS':
+            return action.payload;
+        default:
+            return state;
+    }
+};
 
 // this is the saga that will watch for actions
 //* 2. generator function => TRAFFIC COP

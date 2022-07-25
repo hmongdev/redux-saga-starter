@@ -6,7 +6,7 @@ function App() {
     const elements = useSelector((store) => store.elementList);
     const [newElement, setNewElement] = useState('');
 
-    //* 8. remove getElements
+    //* 8. remove GET
     // const getElements = () => {
     //     axios
     //         .get('/api/element')
